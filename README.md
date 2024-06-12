@@ -6,6 +6,14 @@ You can visit the project at [https://postai.fosspage.com/](https://postai.fossp
 
 ## Getting Started
 
+Clone the repo - git clone https://github.com/prathamdupare/ai-post-generator.git
+
+Clone the repository:
+
+```bash
+git clone https://github.com/prathamdupare/ai-post-generator.git
+```
+
 First, add a `.env.local` file. An example `.env.example` is provided in the project. Add appropriate values.
 
 Replace the URL in `app/posts/page.tsx` from `https://postai.fosspage.com/api/getPosts` to `"http://localhost:3000/api/getPosts"` if running in a development environment.
