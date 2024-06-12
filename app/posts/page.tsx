@@ -11,7 +11,7 @@ import {
 
 const page = async () => {
   const getPostsData = async () => {
-    const response = await fetch(`${process.env.APP_URL}/api/getPosts`, {
+    const response = await fetch(`https://postai.fosspage.com/api/getPosts`, {
       cache: "no-store",
       method: "GET",
       headers: {
