@@ -7,6 +7,8 @@ import { FormEvent, useState } from "react";
 export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [post, setPost] = useState("");
+  const [aiResponse, setAiResponse] = useState("");
+  const [canSubmit, setCanSubmit] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPrompt(e.target.value);
@@ -16,9 +18,26 @@ export default function Home() {
     setPost(e.target.value);
   };
 
+  const handleAiSubmit = async () => {
+    const response = await fetch("/api/ai", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ messages: prompt }),
+    });
+
+    const content = await response.json();
+    console.log(content);
+    setAiResponse(content.output.content);
+    setPost(content.output.content);
+    setCanSubmit(true);
+  };
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Implement the submit logic here
+
     function getHumanReadableDate() {
       const timestamp = Date.now();
       const date = new Date(timestamp);
@@ -32,15 +51,14 @@ export default function Home() {
 
       return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     }
+
     const form = {
       time: getHumanReadableDate(),
       prompt,
       post,
     };
 
-    console.log(form);
-
-    const response = await fetch("api/submit", {
+    const response = await fetch("/api/submit", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -50,16 +68,17 @@ export default function Home() {
     });
 
     const content = await response.json();
-    console.log(content);
     alert(content.data.tableRange);
 
-    setPost("");
     setPrompt("");
+    setPost("");
+    setAiResponse("");
+    setCanSubmit(false);
   };
 
   return (
-    <div className="flex h-screen  items-center justify-center bg-gray-100">
-      <div className="bg-white p-6 rounded w-[400px] shadow-sm">
+    <div className="flex h-screen items-center justify-center bg-gray-100 shadow">
+      <div className="flex gap-10 bg-white p-6 rounded w-[600px] shadow-sm">
         <form className="py-4 space-y-4" onSubmit={handleSubmit}>
           <Label>Prompt</Label>
           <Input
@@ -76,17 +95,31 @@ export default function Home() {
             name="post"
             value={post}
             onChange={handlePostChange}
-            placeholder="Enter your prompt"
+            placeholder="Generated post will appear here"
             className="border p-2 rounded w-full"
+            readOnly
           />
 
-          <Button type="submit" className="mt-2">
-            Submit
-          </Button>
-        </form>
-      </div>
+          <div className="flex gap-2">
+            <Button type="button" onClick={handleAiSubmit} className="mt-2">
+              Generate Post
+            </Button>
 
-      <div className="bg-white p-6 rounded w-[400px] shadow-sm"></div>
+            <Button type="submit" className="mt-2" disabled={!canSubmit}>
+              Submit
+            </Button>
+          </div>
+        </form>
+
+        {aiResponse ? (
+          <div className="mt-4 p-4 border rounded bg-gray-50">
+            <p>Generated Post:</p>
+            <p>{aiResponse}</p>
+          </div>
+        ) : (
+          <div>AI generated post will be shown here.</div>
+        )}
+      </div>
     </div>
   );
 }
