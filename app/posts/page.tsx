@@ -11,7 +11,7 @@ import {
 
 const page = async () => {
   const getPostsData = async () => {
-    const response = await fetch("http://localhost:3000/api/getPosts", {
+    const response = await fetch(`${process.env.APP_URL}/api/getPosts`, {
       cache: "no-store",
       method: "GET",
       headers: {
