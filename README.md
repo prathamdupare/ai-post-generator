@@ -3,6 +3,7 @@
 PostAI is a web application where users can input a prompt to generate social media posts text using OpenAI's API
 
 You can visit the project at [https://postai.fosspage.com/](https://postai.fosspage.com/).
+
 The changes can be seen and edited in this Google Sheet - [here](https://docs.google.com/spreadsheets/d/1n2V5n1xwZj50twqzjHvziYrvCCPY-WaB61GMVEWvmks/edit?usp=sharing)
 
 ## Getting Started
