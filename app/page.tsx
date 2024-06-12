@@ -2,13 +2,18 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/components/ui/use-toast";
 import { FormEvent, useState } from "react";
 
 export default function Home() {
+  const { toast } = useToast();
+
   const [prompt, setPrompt] = useState("");
   const [post, setPost] = useState("");
   const [aiResponse, setAiResponse] = useState("");
   const [canSubmit, setCanSubmit] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPrompt(e.target.value);
@@ -19,6 +24,7 @@ export default function Home() {
   };
 
   const handleAiSubmit = async () => {
+    setIsLoading(true);
     const response = await fetch("/api/ai", {
       method: "POST",
       headers: {
@@ -33,10 +39,15 @@ export default function Home() {
     setAiResponse(content.output.content);
     setPost(content.output.content);
     setCanSubmit(true);
+    setIsLoading(false);
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    toast({
+      title: "Saving...Please Wait...",
+    });
 
     function getHumanReadableDate() {
       const timestamp = Date.now();
@@ -68,7 +79,11 @@ export default function Home() {
     });
 
     const content = await response.json();
-    alert(content.data.tableRange);
+
+    toast({
+      title: "Saved post into Google Sheet.",
+      description: getHumanReadableDate(),
+    });
 
     setPrompt("");
     setPost("");
@@ -77,8 +92,8 @@ export default function Home() {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center bg-gray-100 shadow">
-      <div className="flex gap-10 bg-white p-6 rounded w-[600px] shadow-sm">
+    <div className="flex h-screen items-center justify-center  shadow">
+      <div className="flex flex-col md:flex-row gap-10  p-6 rounded w-[600px] shadow-sm">
         <form className="py-4 space-y-4" onSubmit={handleSubmit}>
           <Label>Prompt</Label>
           <Input
@@ -88,16 +103,6 @@ export default function Home() {
             onChange={handleChange}
             placeholder="Enter your prompt"
             className="border p-2 rounded w-full"
-          />
-
-          <Input
-            type="text"
-            name="post"
-            value={post}
-            onChange={handlePostChange}
-            placeholder="Generated post will appear here"
-            className="border p-2 rounded w-full"
-            readOnly
           />
 
           <div className="flex gap-2">
@@ -112,12 +117,24 @@ export default function Home() {
         </form>
 
         {aiResponse ? (
-          <div className="mt-4 p-4 border rounded bg-gray-50">
+          <div className="mt-4 p-4 border rounded ">
             <p>Generated Post:</p>
             <p>{aiResponse}</p>
           </div>
         ) : (
-          <div>AI generated post will be shown here.</div>
+          <div className="flex rounded items-center justify-center">
+            <div className="">
+              {isLoading ? (
+                <div className="flex flex-col gap-2">
+                  <Skeleton className="w-[300px] bg-gray-200 h-[20px] rounded-full" />
+
+                  <Skeleton className="w-[100px] bg-gray-200 h-[20px] rounded-full" />
+                </div>
+              ) : (
+                <p className="p-2">AI generated post will be shown here.</p>
+              )}
+            </div>
+          </div>
         )}
       </div>
     </div>
