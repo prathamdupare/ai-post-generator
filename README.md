@@ -1,8 +1,14 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# PostAI
+
+You can visit the project at [https://postai.fosspage.com/](https://postai.fosspage.com/).
 
 ## Getting Started
 
-First, run the development server:
+First, add a `.env.local` file. An example `.env.example` is provided in the project. Add appropriate values.
+
+Replace the URL in `app/posts/page.tsx` from `https://postai.fosspage.com/api/getPosts` to `"http://localhost:3000/api/getPosts"` if running in a development environment.
+
+To start the development server, run:
 
 ```bash
 npm run dev
