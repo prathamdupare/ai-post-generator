@@ -29,7 +29,7 @@ const page = async () => {
   return (
     <div className="container mx-auto p-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {data.data.map((post, index) => (
+        {data.data.map((post: any, index: number) => (
           <Card key={index} className="h-full flex flex-col justify-between">
             <CardHeader>
               <CardDescription>Prompt</CardDescription>
